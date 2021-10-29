@@ -11,6 +11,7 @@ d3.csv('driving.csv').then(data=>{
 
     const xScale = d3
         .scaleLinear()
+        .nice()
         .rangeRound([0,width])
         .domain([d3.min(data, function(d){return d.miles;}),d3.max(data, function(d) {return d.miles;})])//[d3.min(data, function(d){return d.stores;})
         //console.log('xScale', xScale);
@@ -18,6 +19,7 @@ d3.csv('driving.csv').then(data=>{
 
     const yScale = d3
         .scaleLinear()
+        .nice()
         .domain([d3.min(data, function(d){return d.gas;}),d3.max(data, function(d) {return d.gas;})])//[d3.min(data, function(d){return d.stores;})
         .rangeRound([0,height])
         
@@ -44,9 +46,6 @@ d3.csv('driving.csv').then(data=>{
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
-    const line = d3.line()
-        .x(function(d) { return xScale(d.miles);})
-        .y(function(d) { return yScale(d.gas);});
     
     
        
@@ -83,6 +82,7 @@ d3.csv('driving.csv').then(data=>{
                 break;
             }
     }
+    //Halo
     function halo(text) {
         text
           .select(function() {
@@ -140,7 +140,7 @@ d3.csv('driving.csv').then(data=>{
       //make gridlines
 
       //axisGroup.select(".domain").remove()) "more elegant way below"
-      //y grid
+      //grid
       svg.call(xAxis)
             .call(svg => svg.select(".domain").remove())
             .selectAll(".tick line")
@@ -156,6 +156,7 @@ d3.csv('driving.csv').then(data=>{
                 
                 .call(halo) // optional halo effect
             );
+        //ygrid
         svg.call(yAxis)
             .call(svg => svg.select(".domain").remove())
             .selectAll(".tick line")
@@ -171,24 +172,13 @@ d3.csv('driving.csv').then(data=>{
                 
                 .call(halo) // optional halo effect
             );
-    //x grid
-        /*svg.call(xAxis)
-            .call(svg => svg.select(".domain").remove())
-            .selectAll(".tick line")
-            .clone()
-                .attr("y2", margin.top)//+ margin.bottom - height)
-                .attr("stroke-opacity", 0.1) // make it transparent 
-            .call(g=>
-                svg.append("text")
-                .attr("x", -margin.left)
-                .attr("y", 10)
-                .attr("text-anchor", "end")
-                .text("Mile per gallon")
-                
-                .call(halo) // optional halo effect
-            );*/
+    
 
 
+        const line = d3
+            .line()
+            .x(function(d) { return xScale(d.miles);})
+            .y(function(d) { return yScale(d.gas);});
         const path = svg.selectAll("path")
             .datum(data)
             .enter().append("path")
